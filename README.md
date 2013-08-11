@@ -2,6 +2,10 @@
 
 Simple interface to USB TEMPer thermometer device
 
+Multiple devices are supported, but as there is no way to uniquely identify them it may be difficult to keep them straight. 
+
+![TEMPer Sensor](https://raw.github.com/kiloforce/markdowntest/master/temper.png)
+
 ## Installation
 
 ```
@@ -24,7 +28,7 @@ Source forked from: http://www.manialabs.us/downloads/Temper.py
 
 ## Todo
 
-- [ ] Support multiple devices
+- [X] Support multiple devices
 
 ## Issues
 
@@ -50,6 +54,7 @@ Unable to setup the device
 
 ## Changelog
 
+* Support for multiple sensor devices
 * Fixed "usb.core.USBError: [Errno None] error sending control message: Value too large for defined data type"
 * Hide "Unable to setup the device"
 * Report both Celsius and Fahrenheit
