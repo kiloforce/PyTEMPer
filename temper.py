@@ -26,11 +26,15 @@ class Temper():
             if self.device.is_kernel_driver_active(0):
                 self.device.detach_kernel_driver(0)
                 self.device.detach_kernel_driver(1)
-        
-            self.device.set_configuration()
+        except Exception as e:
+            #print "Exception: " + str(e)
+            pass
 
-        except:
+        try:
+            self.device.set_configuration()
+        except Exception as e:
             print 'Unable to setup the device'
+            print "Exception: " + str(e)
             return
 
         #
@@ -116,7 +120,7 @@ class Temper():
             1,
             0x300,
             0x1,
-            2,
+            256,
             0
             )
 
@@ -139,4 +143,9 @@ class Temper():
 if __name__ == '__main__':
     temper = Temper()
 
-    print '%5.1f %s' % (temper.getTemperature(), temper.getUnits())
+    tempc = temper.getTemperature()
+    tempcunits = temper.getUnits()
+    tempf = (tempc * 9/5) + 32
+    tempfunits = "Fahrenheit"
+    print '%0.2f %s / %0.2f %s' % (tempc, tempcunits, tempf, tempfunits)
+
