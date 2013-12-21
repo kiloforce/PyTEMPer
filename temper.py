@@ -25,19 +25,33 @@ class Temper():
             print 'Unable to find a temperature device'
             return
 
+        # Try our best to detach the device from any previous state
         try:
             for device in self.devices:
                 if device.is_kernel_driver_active(0):
                     device.detach_kernel_driver(0)
                 if device.is_kernel_driver_active(1):
                     device.detach_kernel_driver(1)
+        except NotImplementedError as e:
+            #Note: some system do not implement is_kernel_driver_active
+            try:
+                for device in self.devices:
+                    device.detach_kernel_driver(0)
+                    device.detach_kernel_driver(1)
+            except Exception as e:
+                # I give up, maybe we will get lucky anyway
+                #print "Exception: " + e.__class__.__name__ + ": " + str(e)
+                pass
         except Exception as e:
-            # Note: some system do not implement is_kernel_driver_active
             #print "Exception: " + e.__class__.__name__ + ": " + str(e)
             pass
 
+        # Configure the device
         for device in self.devices:
             try:
+                # This attach would avoid the following kernel warning, but
+                # generates 2 other attach lines.  A clean "claim" would be better.
+                #   kernel warning: 'process xxx (python) did not claim interface 1 before use'
                 #device.attach_kernel_driver(0)
                 #device.attach_kernel_driver(1)
                 #device.reset()
@@ -166,5 +180,6 @@ if __name__ == '__main__':
         tempfunits = "Fahrenheit"
         devicebus = device.bus
         deviceaddress = device.address
+        # Example output: 0:7, 17.06 Celsius / 62.71 Fahrenheit
         print '%d:%d, %0.2f %s / %0.2f %s' % (devicebus, deviceaddress, tempc, tempcunits, tempf, tempfunits)
 
