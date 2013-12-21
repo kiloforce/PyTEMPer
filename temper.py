@@ -29,18 +29,21 @@ class Temper():
             for device in self.devices:
                 if device.is_kernel_driver_active(0):
                     device.detach_kernel_driver(0)
+                if device.is_kernel_driver_active(1):
                     device.detach_kernel_driver(1)
         except Exception as e:
-            #print "Exception: " + str(e)
+            # Note: some system do not implement is_kernel_driver_active
+            #print "Exception: " + e.__class__.__name__ + ": " + str(e)
             pass
 
         for device in self.devices:
             try:
                 device.set_configuration()
             except Exception as e:
-                print 'Unable to setup the device'
-                print "Exception: " + str(e)
-                return
+                print "Error: Unable to setup the device"
+                raise e
+                #print "Exception: " + e.__class__.__name__ + ": " + str(e)
+                #return
 
         #
         # the following sequence appear to be necessary to
@@ -154,5 +157,7 @@ if __name__ == '__main__':
         tempcunits = temper.getUnits()
         tempf = (tempc * 9/5) + 32
         tempfunits = "Fahrenheit"
-        print '%0.2f %s / %0.2f %s' % (tempc, tempcunits, tempf, tempfunits)
+        devicebus = device.bus
+        deviceaddress = device.address
+        print '%d:%d, %0.2f %s / %0.2f %s' % (devicebus, deviceaddress, tempc, tempcunits, tempf, tempfunits)
 
