@@ -38,6 +38,9 @@ class Temper():
 
         for device in self.devices:
             try:
+                #device.attach_kernel_driver(0)
+                #device.attach_kernel_driver(1)
+                #device.reset()
                 device.set_configuration()
             except Exception as e:
                 print "Error: Unable to setup the device"
@@ -134,6 +137,10 @@ class Temper():
             )
 
         if len(temperatureBuffer) > 1:
+            if temperatureBuffer[0] == 0 and temperatureBuffer[1] == 255:
+                print "Failed to retrieve temperature"
+                return 0.0
+            #print temperatureBuffer
             temperature = int(temperatureBuffer[0] << 8) + int(temperatureBuffer[1] & 0xff) + self.calibrationConstant
             temperature = temperature * (125.0 / 32000.0)
             if self.units == 'F':
