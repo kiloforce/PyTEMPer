@@ -12,15 +12,17 @@ class Temper():
 
     def __init__(self):
 
+        self.devices = []
         self.calibrationConstant = 15
         self.units = 'C'
 
-        self.devices = usb.core.find(
+        self.device_list = usb.core.find(
                 find_all=True,
                 idVendor = 0x1130,
                 idProduct = 0x660c
                 )
-        
+        self.devices = [device for device in self.device_list]
+
         if self.devices is None:
             print 'Unable to find a temperature device'
             return
