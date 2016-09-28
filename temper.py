@@ -7,6 +7,7 @@ Source: http://www.manialabs.us/downloads/Temper.py
 """
 
 import usb.core
+import sys
 
 class Temper():
 
@@ -127,7 +128,7 @@ class Temper():
         self.units = units
 
         return
-        
+
     def getUnits(self):
         if self.units == 'C':
             return 'Celsius'
@@ -142,7 +143,7 @@ class Temper():
         nullTrailer = ''
         for i in range(0, 24):
             nullTrailer = nullTrailer + chr(0)
- 
+
         temperatureBuffer = device.ctrl_transfer(
             0xa1,
             1,
@@ -171,7 +172,7 @@ class Temper():
             temperature = 0.0
 
         return temperature
-        
+
 if __name__ == '__main__':
     temper = Temper()
 
@@ -182,6 +183,29 @@ if __name__ == '__main__':
         tempfunits = "Fahrenheit"
         devicebus = device.bus
         deviceaddress = device.address
-        # Example output: 0:7, 17.06 Celsius / 62.71 Fahrenheit
-        print '%d:%d, %0.2f %s / %0.2f %s' % (devicebus, deviceaddress, tempc, tempcunits, tempf, tempfunits)
+        if len(sys.argv) < 2:
+            # Example output: 0:7, 17.06 Celsius / 62.71 Fahrenheit
+            print '%d:%d, %0.2f %s / %0.2f %s' % (devicebus, deviceaddress, tempc, tempcunits, tempf, tempfunits)
+        else:
+            if sys.argv[1] == "-c":
+                # Example Celsius output: 17.06
+                print '%0.2f' % tempc
+            elif sys.argv[1] == "-C":
+                # Example Celsius output: 17
+                print '%0.0f' % tempc
+            elif sys.argv[1] == "-f":
+                # Example Fahrenheit output: 62.71
+                print '%0.2f' % tempf
+            elif sys.argv[1] == "-F":
+                # Example Fahrenheit output: 62
+                print '%0.0f' % tempf
+            else:
+                print "Usage: %s [options]" % sys.argv[0]
+                print "Options:"
+                print "    -c  # report Celsius"
+                print "    -C  # report Celsius rounded"
+                print "    -f  # report Fahrenheit"
+                print "    -F  # report Fahrenheit rounded"
+                print "    -h  # Help"
+                sys.exit(1)
 
